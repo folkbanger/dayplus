@@ -1,10 +1,10 @@
-/* Day+ pages: warm paper, ink text, Geist, one coral + (same tokens as the app). */
+/* Day+ pages: warm paper, ink text, Geist, one Deep Teal + (same tokens as the app). */
 :root {
-  --paper: #f1f0ed; --card: #ffffff; --ink: #141414; --ink2: #3a3936; --mute: #7a7974; --line: #dddbd6; --coral: #f07b5a;
+  --paper: #f1f0ed; --card: #ffffff; --ink: #141414; --ink2: #3a3936; --mute: #7a7974; --line: #dddbd6; --accent: #00838f;
   color-scheme: light dark;
 }
 @media (prefers-color-scheme: dark) {
-  :root { --paper: #161513; --card: #22211e; --ink: #f1efea; --ink2: #c7c4bd; --mute: #8e8b84; --line: #2f2e2a; }
+  :root { --paper: #161513; --card: #22211e; --ink: #f1efea; --ink2: #c7c4bd; --mute: #8e8b84; --line: #2f2e2a; --accent: #1bb0bd; }
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -14,13 +14,13 @@ body {
 }
 main { max-width: 640px; margin: 0 auto; padding: 48px 20px 72px; }
 .mark { display: inline-block; font-weight: 500; font-size: 30px; letter-spacing: -1.4px; color: var(--ink); text-decoration: none; }
-.mark b { color: var(--coral); font-weight: 500; }
+.mark b { color: var(--accent); font-weight: 500; }
 .cap { font-family: "Geist Mono", ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: var(--mute); }
 h1 { margin: 36px 0 6px; font-weight: 500; font-size: 36px; line-height: 1.1; letter-spacing: -1.4px; color: var(--ink); }
 h2 { margin: 40px 0 8px; font-weight: 500; font-size: 20px; letter-spacing: -0.5px; color: var(--ink); }
 p, li { margin: 0 0 12px; }
 ul { padding-left: 20px; margin: 0 0 12px; }
-a { color: var(--ink); text-decoration-color: var(--coral); text-underline-offset: 3px; }
+a { color: var(--ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
 strong { color: var(--ink); font-weight: 500; }
 .lead { font-size: 18px; color: var(--ink); }
 .card { background: var(--card); border-radius: 16px; padding: 18px 20px; margin: 24px 0; box-shadow: 0 10px 26px rgba(40, 30, 20, 0.07); }
