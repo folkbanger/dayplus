@@ -1,4 +1,8 @@
 /* Day+ pages: warm paper, ink text, Geist, one Deep Teal + (same tokens as the app). */
+/* Fonts are served from this site (no Google Fonts request, so no visitor data goes to a third party). Geist: SIL Open Font License, see fonts/OFL.txt. */
+@font-face { font-family: "Geist"; src: url("fonts/Geist_400Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Geist"; src: url("fonts/Geist_500Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Geist Mono"; src: url("fonts/GeistMono_400Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
 :root {
   --paper: #f1f0ed; --card: #ffffff; --ink: #141414; --ink2: #3a3936; --mute: #7a7974; --line: #dddbd6; --accent: #00838f;
   color-scheme: light dark;
