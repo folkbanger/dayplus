@@ -1,0 +1,11 @@
+---
+// Apple's official "Download on the App Store" badge (black, US English), unmodified.
+// Until APP_STORE_URL is set, it is shown dimmed with a "Coming soon" label and is not a link.
+import badge from '../assets/badges/app-store-black.svg?url';
+import { APP_STORE_URL } from '../config';
+---
+{APP_STORE_URL ? (
+  <a class="badge" href={APP_STORE_URL}><img src={badge} width="156" height="52" alt="Download on the App Store" /></a>
+) : (
+  <span class="badge soon"><img src={badge} width="156" height="52" alt="Download on the App Store (coming soon)" /><span>Coming soon</span></span>
+)}

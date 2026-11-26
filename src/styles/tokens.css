@@ -1,0 +1,34 @@
+/* Day+ web tokens (System V2). The one place for colours, spacing, radius, type and the desktop grid.
+   Spacing scale: 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64, plus 128 between sections.
+   Radius: 24 (cards) · 12 (small). Weights 400 / 600. Nothing under 11 px. */
+:root{
+  /* colour */
+  --ink:#0B0B0F; --ink2:#5B6168;
+  --teal:#00838F;        /* accent on light (headlines, borders, large text) */
+  --teal-text:#00747F;   /* accent for small text on light: same hue, darker for AA contrast */
+  --teal2:#4FD1DB;       /* accent on dark */
+  --d1:#07090A; --d2:#101315; --d-line:#1C2023; --dl:#9BA1A8;
+  --l1:#F1F4F5; --l2:#E3EFF0;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+
+  /* spacing */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:64px; --s-sec:128px;
+  /* radius */
+  --r-card:24px; --r-small:12px; --r-full:999px;
+
+  /* desktop grid (used from 960 px) */
+  --cols:12; --gutter:24px; --content-max:1200px; --margin-min:64px;
+  --m:max(var(--margin-min), calc((100vw - var(--content-max)) / 2));
+
+  /* web type scale: size / line height */
+  --t-display:80px; --lh-display:84px;
+  --t-h1:56px;      --lh-h1:60px;
+  --t-h2:32px;      --lh-h2:40px;
+  --t-h3:24px;      --lh-h3:32px;
+  --t-lead:20px;    --lh-lead:28px;
+  --t-body:17px;    --lh-body:24px;
+  --t-ui:15px;      --lh-ui:20px;
+  --t-small:13px;   --lh-small:18px;
+  --t-min:11px;     --lh-min:16px;
+}

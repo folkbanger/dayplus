@@ -1,0 +1,23 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  loader?: boolean;
+}
+const { title, description, loader = false } = Astro.props;
+---
+<!doctype html>
+<html lang="en-US" data-loader={loader ? '' : undefined}>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="color-scheme" content="dark light" />
+<script is:inline src="/js/boot.js"></script>
+<slot name="head" />
+</head>
+<body>
+<slot />
+</body>
+</html>

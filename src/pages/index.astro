@@ -1,0 +1,175 @@
+---
+import { Picture, Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import AppStoreBadge from '../components/AppStoreBadge.astro';
+import { APP_STORE_URL, SEASONAL_PILL, BLOG_STRIP_MIN, OWNER, YEAR } from '../config';
+import '../styles/tokens.css';
+import '../styles/home.css';
+
+import todayDark from '../assets/phones/today-dark.png';
+import recaps from '../assets/phones/recaps.png';
+import rest from '../assets/phones/rest.png';
+import lock from '../assets/phones/lock.png';
+import widgets from '../assets/phones/widgets.png';
+import back from '../assets/phone3d/back.webp';
+import sideL from '../assets/phone3d/side_l.webp';
+import sideR from '../assets/phone3d/side_r.webp';
+import icon from '../assets/icon.png';
+
+const screens = [todayDark, recaps, rest, lock, widgets];
+const caps = [
+  ['Your daily routine,', 'tracked in one tap', 'Morning, anytime and evening, all on one screen.'],
+  ['Recaps that help you', 'plan what’s next', 'Weekly, monthly and yearly. See how far you’ve come.'],
+  ['Sick or away?', 'Your streak waits.', 'Streaks pause. Nothing is lost.'],
+  ['Your day, live on', 'the Lock Screen', 'Done, In 1 hour or On it, right from a reminder.'],
+  ['Check in without', 'opening the app', 'Widgets keep today and the next habit in sight.'],
+];
+const habits = [
+  ['Drink water', 'hc-teal'],
+  ['Workout', 'hc-coral'],
+  ['Read 10 pages', 'hc-gold'],
+];
+const chipsA = [['Workout', '3× a week', 'hc-coral'], ['Read', 'mini: 1 page', 'hc-gold'], ['Water', '8 glasses', 'hc-blue']];
+const chipsB = [['Meditate', '10 min', 'hc-violet'], ['Journal', 'evenings', 'hc-olive'], ['Skincare', 'some days', 'hc-teal']];
+const faq = [
+  ['What is Day+?', 'Day+ is a habit tracker for iPhone. Pick a few small habits, check them off in one tap, and watch your day fill up. Weekly, monthly and yearly recaps show how far you’ve come, and on busy days a mini version still counts.'],
+  ['Do I need an account?', 'No. There’s no account and no sign-in. Your habits stay on your iPhone and in your iPhone’s own backup.'],
+  ['What happens after the 3 free days?', 'Nothing is charged automatically. Today stays free with up to 3 habits. Stats, plans and recaps need Day+ Pro.'],
+  ['Will a missed day break my streak?', 'One missed day won’t undo a habit. Sick days and vacation days don’t break your streak.'],
+  ['How do I cancel?', 'Manage or cancel any time in your Apple ID settings. Lifetime is one payment, no subscription.'],
+];
+
+// Blog strip: the 3 newest real articles. Hidden until there are at least BLOG_STRIP_MIN.
+type Post = { url: string; title: string; description: string; topic: string; date: Date; minutes: number };
+const posts: Post[] = []; // filled from the blog collection in W2
+const latest = posts.length >= BLOG_STRIP_MIN ? posts.slice(0, 3) : [];
+const hasBlog = posts.length > 0;
+const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+const getUrl = APP_STORE_URL || '#get';
+---
+<Base
+  title="Day+: Habit Tracker for iPhone"
+  description="Day+ is a habit tracker for iPhone. Pick a few habits, check them off in one tap, and see yourself get better week by week. Free for 3 days."
+  loader
+>
+<a class="skip" href="#main">Skip to content</a>
+<div id="ld" aria-hidden="true"><svg viewBox="0 0 88 88"><circle class="bg" cx="44" cy="44" r="36"/><circle class="fg" cx="44" cy="44" r="36"/></svg><div class="n"><span id="ln">0</span>% of today</div></div>
+
+<header class="nav" id="nav"><a class="brand" href="/">Day+</a><a class="get" href={getUrl}>Get the app</a></header>
+
+<main id="main">
+<section class="hero" id="hero">
+  <canvas id="dots" aria-hidden="true"></canvas><div class="glow" aria-hidden="true"></div>
+  {SEASONAL_PILL.show && (
+    <div class="lg" id="lg"><span class="lg-t"><i class="spark" aria-hidden="true"></i>{SEASONAL_PILL.text} <em>{SEASONAL_PILL.em}</em></span></div>
+  )}
+  <h1 class="hh"><span class="ln">One small win</span><span class="ln">for your <span class="sr">mornings, workouts, reading and sleep</span><span class="rot" aria-hidden="true"><span id="rot"><i class="on">mornings</i><i>workouts</i><i>reading</i><i>sleep</i></span></span></span></h1>
+  <p class="lead">Pick a few habits, check them off in one tap, and see yourself get better week by week.</p>
+  <div class="cta">
+    <AppStoreBadge />
+    <span class="small">Free for 3 days. No card.</span>
+  </div>
+  <div class="heroPhone" id="heroPhone">
+    <Picture src={todayDark} widths={[500, 780]} sizes="(min-width: 960px) 360px, 250px" formats={['avif', 'webp']} fallbackFormat="png" alt="Day+ Today screen" loading="eager" fetchpriority="high" />
+  </div>
+</section>
+
+<section class="build" aria-labelledby="build-h">
+  <div class="eyebrow up">Try it: tap each habit</div>
+  <h2 class="up" id="build-h">Watch your day<br /><b>fill up</b></h2>
+  <div class="meter up" id="meter">
+    <b class="band" aria-hidden="true"></b><i class="sp" aria-hidden="true"></i><i class="sp" aria-hidden="true"></i><i class="sp" aria-hidden="true"></i><i class="sp" aria-hidden="true"></i><i class="sp" aria-hidden="true"></i><i class="sp" aria-hidden="true"></i>
+    <div class="pct"><span id="pct">0</span><small>%</small></div>
+    <div class="cnt" id="cnt" aria-live="polite">0 of 3 done</div>
+    <div class="bar" id="bar" aria-hidden="true">{habits.map(([, c]) => <i class={c}></i>)}</div>
+    <div class="full" id="full">Full day. That’s how streaks grow.</div>
+  </div>
+  <div class="habits" id="habits">
+    {habits.map(([n, c]) => (
+      <button class="hb" type="button" aria-pressed="false"><i class={`c ${c}`} aria-hidden="true"></i><span class="nw"><span class="n">{n}</span><span class="tm"></span></span><span class="k" aria-hidden="true"></span></button>
+    ))}
+  </div>
+  <p class="note">A demo with example habits. In the app, you pick your own.</p>
+</section>
+
+<section class="show" id="show" aria-label="What Day+ does">
+  <div class="stick">
+    <div class="caps">
+      {caps.map(([a, b, p], i) => (
+        <div class={i === 0 ? 'cap on' : 'cap'}><h2>{a}<br /><b>{b}</b></h2><p>{p}</p></div>
+      ))}
+    </div>
+    <div class="stage3d" aria-hidden="true"><div class="p3" id="p3">
+      <div class="face front"><div class="frame">
+        {screens.map((s, i) => (
+          <Picture src={s} widths={[480, 780]} sizes="(min-width: 960px) 300px, 240px" formats={['avif', 'webp']} fallbackFormat="png" alt="" loading="lazy" pictureAttributes={{ class: i === 0 ? 'scr on' : 'scr' }} />
+        ))}
+      </div></div>
+      {Array.from({ length: 24 }, () => <i class="sl"></i>)}
+      <div class="side sr"><Image src={sideR} alt="" width={44} height={796} loading="lazy" /></div>
+      <div class="side sl2"><Image src={sideL} alt="" width={44} height={796} loading="lazy" /></div>
+      <div class="face back"><Picture src={back} widths={[480]} formats={['avif', 'webp']} fallbackFormat="webp" alt="" loading="lazy" /></div>
+    </div><i class="shadow3d" id="sh3"></i></div>
+    <div class="pips" aria-hidden="true">{caps.map((_, i) => <i class={i === 0 ? 'on' : ''}></i>)}</div>
+  </div>
+</section>
+
+<section aria-labelledby="busy-h">
+  <div class="bento-head"><div class="eyebrow up">Built for busy days</div><h2 class="up" id="busy-h">Keep going,<br /><b>even on busy days</b></h2></div>
+  <div class="bento">
+    <div class="bx w up">
+      <h3>Stay consistent without burning out</h3><p>Set each habit for every day, some days or a few times a week. On busy days, the mini version keeps your progress going.</p>
+      <div class="mq" aria-hidden="true">
+        <div class="row">{[...chipsA, ...chipsA].map(([n, e, c]) => <span class="chip"><i class={c}></i>{n} <em>· {e}</em></span>)}</div>
+        <div class="row rev">{[...chipsB, ...chipsB].map(([n, e, c]) => <span class="chip"><i class={c}></i>{n} <em>· {e}</em></span>)}</div>
+      </div>
+    </div>
+    <div class="bx up" id="tilesBox"><h3>Sick or away?</h3><p>Rest days don’t break your streak.</p>
+      <div class="tiles" aria-hidden="true"><b class="f">S</b><b class="f">M</b><b>T</b><b>W</b><b>T</b><b>F</b><b>S</b></div></div>
+    <div class="bx up"><h3>Yours only</h3><p>No account, no sign-in, no feed.</p>
+      <div class="lock" aria-hidden="true"><svg viewBox="0 0 56 56"><path class="sh" d="M19 25v-6a9 9 0 0 1 18 0v6"/><rect x="13" y="25" width="30" height="22" rx="6"/><circle cx="28" cy="35" r="2.5"/></svg></div></div>
+  </div>
+</section>
+
+<section class="light" id="light">
+  <div class="sec first pricing">
+    <div class="eyebrow up">Day+ Pro</div>
+    <h2 class="up">Try everything<br /><b>free for 3 days</b></h2>
+    <div class="free up"><b>No card. Nothing is charged automatically.</b><p>After that, Today stays free with up to 3 habits. Stats, plans and recaps need Day+ Pro.</p></div>
+    <div class="plans up"><div class="plan"><b>Weekly</b><span>Try it out</span></div><div class="plan"><b>Yearly</b><span>A full year</span></div><div class="plan"><b>Lifetime</b><span>Pay once</span></div></div>
+    <p class="price-note up">Prices are shown in the app, in your currency.</p>
+  </div>
+  <div class="sec faqs">
+    <h2 class="up">Questions<br /><b>and answers</b></h2>
+    <div class="faq">
+      {faq.map(([q, a], i) => (
+        <div class={i === 0 ? 'q open' : 'q'}>
+          <h3><button type="button" aria-expanded={i === 0 ? 'true' : 'false'} aria-controls={`faq-${i}`}>{q}<i aria-hidden="true"></i></button></h3>
+          <div class="a" id={`faq-${i}`}><p>{a}</p></div>
+        </div>
+      ))}
+    </div>
+  </div>
+  {latest.length > 0 && (
+    <div class="sec">
+      <div class="eyebrow up">From the blog</div>
+      <h2 class="up">Small habits,<br /><b>explained</b></h2>
+      <div class="posts">
+        {latest.map((p) => (
+          <a class="post" href={p.url}><span class="tag">{p.topic}</span><h3>{p.title}</h3><p>{p.description}</p><div class="meta">{fmt(p.date)} · {p.minutes} min read</div></a>
+        ))}
+      </div>
+      <a class="more" href="/blog/">All articles →</a>
+    </div>
+  )}
+  <div class="end" id="get">
+    <span class="icon"><Image src={icon} alt="" width={96} height={96} densities={[1, 2]} loading="lazy" /></span>
+    <h2>A better you,<br /><b>one day at a time</b></h2>
+    <div class="cta"><AppStoreBadge /><span class="end-note">Free for 3 days. For iPhone.</span></div>
+  </div>
+  <footer><nav aria-label="Footer">{hasBlog && <a href="/blog/">Blog</a>}<a href="/support/">Support</a><a href="/privacy/">Privacy Policy</a><a href="/terms/">Terms of Use</a></nav>© {YEAR} {OWNER}</footer>
+</section>
+</main>
+
+<script src="../scripts/home.js"></script>
+</Base>
