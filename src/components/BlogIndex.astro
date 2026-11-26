@@ -23,12 +23,12 @@ const start = (page - 1) * PER_PAGE;
 const rows = rest.slice(start, start + PER_PAGE).map(card);
 const featured = page === 1 && posts[0] ? card(posts[0]) : null;
 const promo = !topic; // the Day+ box sits in the main list only
-const pageTitle = `${topic ? `${topic} articles` : 'Day+ Blog: Small habits, explained'}${page > 1 ? ` (page ${page})` : ''}`;
+const pageTitle = `${topic ? `${topic} articles | Day+ Blog` : 'Day+ Blog: Small habits, explained'}${page > 1 ? ` (page ${page})` : ''}`;
 const description = topic
   ? `Short, practical ${topic.toLowerCase()} articles on building habits, from the makers of Day+, a habit tracker for iPhone.`
   : 'Short, practical articles on the science of habits and the books about them, from the makers of Day+, a habit tracker for iPhone.';
 ---
-<Base title={pageTitle} description={description}>
+<Base title={pageTitle} description={page > 1 ? `${description} Page ${page}.` : description} image="/og/blog.png" imageAlt="Day+ Blog: Small habits, explained" rss noindex={posts.length === 0}>
 <BlogNav />
 <main id="main">
 <section class="head">

@@ -4,6 +4,7 @@ import Base from '../layouts/Base.astro';
 import AppStoreBadge from '../components/AppStoreBadge.astro';
 import { APP_STORE_URL, SEASONAL_PILL, BLOG_STRIP_MIN, OWNER, YEAR } from '../config';
 import { getPosts, card, fmtDate } from '../lib/posts';
+import { organization, website, mobileApp, faqPage } from '../lib/schema';
 import '../styles/tokens.css';
 import '../styles/home.css';
 
@@ -50,6 +51,8 @@ const getUrl = APP_STORE_URL || '#get';
   title="Day+: Habit Tracker for iPhone"
   description="Day+ is a habit tracker for iPhone. Pick a few habits, check them off in one tap, and see yourself get better week by week. Free for 3 days."
   loader
+  themeLight="#07090A"
+  jsonld={[website(), organization(), mobileApp(), faqPage(faq)]}
 >
 <a class="skip" href="#main">Skip to content</a>
 <div id="ld" aria-hidden="true"><svg viewBox="0 0 88 88"><circle class="bg" cx="44" cy="44" r="36"/><circle class="fg" cx="44" cy="44" r="36"/></svg><div class="n"><span id="ln">0</span>% of today</div></div>

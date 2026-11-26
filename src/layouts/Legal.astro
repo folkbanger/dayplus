@@ -6,10 +6,10 @@ import '../styles/tokens.css';
 import '../styles/blog.css';
 import '../styles/legal.css';
 
-interface Props { title: string; description: string; heading: string; effective?: string }
-const { title, description, heading, effective } = Astro.props;
+interface Props { title: string; description: string; heading: string; effective?: string; noindex?: boolean }
+const { title, description, heading, effective, noindex = false } = Astro.props;
 ---
-<Base title={title} description={description}>
+<Base title={title} description={description} noindex={noindex}>
 <a class="skip" href="#main">Skip to content</a>
 <header class="nav"><a class="brand" href="/">Day+</a><a class="get" href={APP_STORE_URL || '/#get'}>Get the app</a></header>
 <main class="doc" id="main">

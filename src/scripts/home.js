@@ -43,16 +43,29 @@ const $$ = (s) => [...document.querySelectorAll(s)];
   c.parentElement.addEventListener('touchmove', mv, { passive: true });
   let visible = true;
   new IntersectionObserver(([e]) => { const was = visible; visible = e.isIntersecting; if (visible && !was && !RM) requestAnimationFrame(draw); }).observe(c);
+  // Dots are grouped by colour and by one of 24 opacity steps, so each frame fills a few
+  // dozen paths instead of one per dot (same look, a fraction of the work on phones).
+  const STEPS = 24;
   const draw = (t) => {
     x.clearRect(0, 0, W, H);
     const tt = t / 1000;
+    const wb = Array.from({ length: STEPS }, () => new Path2D()), tb = Array.from({ length: STEPS }, () => new Path2D());
     for (const [a, b] of pts) {
-      const wave = 0.5 + 0.5 * Math.sin(a * 0.018 + b * 0.012 - tt * 0.9);
-      const d = Math.hypot(a - px, b - py), near = Math.max(0, 1 - d / 110);
       const fade = Math.min(1, b / 120) * Math.max(0, 1 - (b - H * 0.55) / (H * 0.45));
-      const al = (0.12 + 0.16 * wave * wave + 0.7 * near) * Math.max(0, fade);
-      x.fillStyle = near > 0.05 ? `rgba(79,209,219,${al})` : `rgba(255,255,255,${al})`;
-      x.beginPath(); x.arc(a, b, 0.6 + near * 0.9, 0, 6.283); x.fill();
+      if (fade <= 0) continue;
+      const wave = 0.5 + 0.5 * Math.sin(a * 0.018 + b * 0.012 - tt * 0.9);
+      const dx = a - px, dy = b - py;
+      const near = dx * dx + dy * dy < 12100 ? Math.max(0, 1 - Math.sqrt(dx * dx + dy * dy) / 110) : 0;
+      const al = Math.min(1, (0.12 + 0.16 * wave * wave + 0.7 * near) * fade);
+      const k = Math.min(STEPS - 1, Math.round(al * (STEPS - 1)));
+      const r = 0.6 + near * 0.9;
+      const path = (near > 0.05 ? tb : wb)[k];
+      path.moveTo(a + r, b); path.arc(a, b, r, 0, 6.283);
+    }
+    for (let k = 1; k < STEPS; k++) {
+      const al = k / (STEPS - 1);
+      x.fillStyle = `rgba(255,255,255,${al})`; x.fill(wb[k]);
+      x.fillStyle = `rgba(79,209,219,${al})`; x.fill(tb[k]);
     }
     if (!RM && visible) requestAnimationFrame(draw);
   };
@@ -137,17 +150,12 @@ $$('.q button').forEach((b) => b.addEventListener('click', () => {
   const g = $('#lg');
   if (!g) return;
   const set = (x, y) => { g.style.setProperty('--mx', x + '%'); g.style.setProperty('--my', y + '%'); };
-  addEventListener('pointermove', (e) => {
+  g.addEventListener('pointermove', (e) => {
     const r = g.getBoundingClientRect();
     set(Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100)), Math.max(-50, Math.min(150, ((e.clientY - r.top) / r.height) * 100)));
   });
-  if (RM) return;
-  const t0 = performance.now();
-  const loop = (t) => {
-    if (!g.matches(':hover') && scrollY < innerHeight) { const a = (t - t0) / 1000; set(50 + 40 * Math.sin(a * 0.7), 20 + 30 * Math.sin(a * 1.1)); }
-    requestAnimationFrame(loop);
-  };
-  requestAnimationFrame(loop);
+  // The drift itself is a CSS animation (lgDrift); pointer moves take over while hovering.
+  g.addEventListener('pointerleave', () => { g.style.removeProperty('--mx'); g.style.removeProperty('--my'); });
 })();
 
 // Scroll: hero phone tilt, header tint, and the spinning-phone showcase.

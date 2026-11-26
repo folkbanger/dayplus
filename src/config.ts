@@ -15,3 +15,10 @@ export const BLOG_STRIP_MIN = 3;
 
 export const OWNER = 'Thony Pelupessy';
 export const YEAR = 2026;
+
+/** App Store app ID (the number in the App Store link). Set it once the app is live: turns on Apple's Smart App Banner. */
+export const APP_STORE_ID = '';
+
+export const SITE_URL = 'https://dayplus.app';
+export const SUPPORT_EMAIL = 'support@dayplus.app';
+export const LEGAL_NAME = 'Thony Adrian Pelupessy';

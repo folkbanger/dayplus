@@ -10,6 +10,7 @@ import Stats from '../../components/blog/Stats.astro';
 import DayPlusBox from '../../components/blog/DayPlusBox.astro';
 import Cite from '../../components/blog/Cite.astro';
 import { getPosts, related, card, fmtDate, minutesToRead, topicUrl, isScheduled, type Entry } from '../../lib/posts';
+import { blogPosting, breadcrumbs } from '../../lib/schema';
 import '../../styles/tokens.css';
 import '../../styles/blog.css';
 
@@ -31,9 +32,23 @@ const source = (s: string) =>
   esc(s)
     .replace(/\*([^*]+)\*/g, '<i>$1</i>')
     .replace(/(https?:\/\/[^\s<]+[^\s<.,;)])/g, '<a href="$1" rel="noopener">$1</a>');
+const ogImage = `/og/blog/${post.id}.png`;
 const flag = d.draft ? 'Draft' : isScheduled(post) ? 'Scheduled' : '';
 ---
-<Base title={`${d.title} | Day+ Blog`} description={d.description}>
+<Base
+  title={`${d.title} | Day+ Blog`}
+  description={d.description}
+  type="article"
+  image={ogImage}
+  imageAlt={d.title}
+  rss
+  publishedTime={d.date.toISOString().slice(0, 10)}
+  modifiedTime={(d.updated ?? d.date).toISOString().slice(0, 10)}
+  jsonld={[
+    blogPosting({ url: `/blog/${post.id}/`, title: d.title, description: d.description, date: d.date, updated: d.updated, image: ogImage, topic: d.topic }),
+    breadcrumbs([['Blog', '/blog/'], [d.topic, topicUrl(d.topic)], [d.title, `/blog/${post.id}/`]]),
+  ]}
+>
 <BlogNav progress />
 <main class="wrap" id="main">
   <div class="crumb"><a href="/blog/">Blog</a> › <a href={topicUrl(d.topic)}>{d.topic}</a></div>

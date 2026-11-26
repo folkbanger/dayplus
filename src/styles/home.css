@@ -74,15 +74,19 @@ h1 b,h2 b{font-weight:600;color:var(--teal2)}
  background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.04));
  backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);
  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -1px 0 rgba(255,255,255,.08),inset 0 0 0 1px rgba(255,255,255,.12),0 8px 24px rgba(0,0,0,.35),0 0 32px rgba(79,209,219,.18);
- animation:lgFloat 6s ease-in-out infinite}
+ animation:lgFloat 6s ease-in-out infinite,lgDrift 9s ease-in-out infinite}
+@property --mx{syntax:'<percentage>';inherits:false;initial-value:30%}
+@property --my{syntax:'<percentage>';inherits:false;initial-value:0%}
+/* the highlight drifts slowly (was a script loop) */
+@keyframes lgDrift{0%,100%{--mx:50%;--my:20%}25%{--mx:88%;--my:46%}50%{--mx:52%;--my:-6%}75%{--mx:12%;--my:40%}}
 .lg:before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;
  background:radial-gradient(120px 40px at var(--mx) var(--my),rgba(255,255,255,.35),transparent 70%),radial-gradient(80px 30px at calc(100% - var(--mx)) 100%,rgba(79,209,219,.35),transparent 70%);transition:background .2s}
-.lg:after{content:"";position:absolute;top:0;bottom:0;left:-40%;width:35%;z-index:-1;transform:skewX(-20deg);
+.lg:after{content:"";position:absolute;top:0;bottom:0;left:0;width:35%;z-index:-1;transform:translateX(-115%) skewX(-20deg);
  background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);animation:lgSheen 4.5s cubic-bezier(.4,0,.2,1) infinite}
 .lg-t{display:flex;align-items:center;gap:8px;white-space:nowrap}
 .lg-t em{font-style:normal;font-weight:400;color:rgba(244,245,247,.72)}
 .spark{width:8px;height:8px;border-radius:50%;background:var(--teal2);box-shadow:0 0 10px var(--teal2);animation:lgPulse 2.4s ease-in-out infinite}
-@keyframes lgSheen{0%,55%{left:-40%}100%{left:130%}}
+@keyframes lgSheen{0%,55%{transform:translateX(-115%) skewX(-20deg)}100%{transform:translateX(371%) skewX(-20deg)}}
 @keyframes lgFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-3px) scale(1.015)}}
 @keyframes lgPulse{50%{opacity:.45;transform:scale(.8)}}
 
@@ -147,7 +151,7 @@ html:not(.js) .habits,html:not(.js) .build .note{display:none}
 .p3 .scr.on{opacity:1}
 .p3 .scr img{display:block;width:100%;height:100%}
 .p3 .back{transform:rotateY(180deg) translateZ(11.2px)}
-.p3 .back img{display:block;width:100%;height:100%;transform:scale(1.03);transform-origin:50% 50%}
+.p3 .back img{display:block;width:100%;height:100%;object-fit:cover;transform:scale(1.03);transform-origin:50% 50%}
 .p3 .sl{position:absolute;inset:0;border-radius:37px}
 .p3 .side{position:absolute;top:24px;height:424px;transform-origin:0 50%;backface-visibility:hidden;-webkit-backface-visibility:hidden;
  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%)}

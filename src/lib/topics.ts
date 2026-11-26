@@ -20,3 +20,14 @@ export const TOPIC_ART: Record<Topic, string> = {
 /** Cover markup (also used by the blog's search and Load more). Colours come from .tp-<slug> in blog.css. */
 export const coverHtml = (t: Topic, cls = 'dv') =>
   `<div class="${cls} tp-${topicSlug(t)}" aria-hidden="true"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">${TOPIC_ART[t]}</svg></div>`;
+
+/** Same colours as .tp-<slug> in blog.css, for the share images. [dark, light] */
+export const TOPIC_COLORS: Record<Topic, [string, string]> = {
+  Science: ['#0D5F7A', '#4FD1DB'],
+  Books: ['#8A5A12', '#D9A441'],
+  Habits: ['#0E6E76', '#58C7C9'],
+  Routines: ['#B7791F', '#D9A441'],
+  Focus: ['#24525C', '#4FD1DB'],
+  Sleep: ['#2E2A5A', '#9C8CE0'],
+  Motivation: ['#5E2C4F', '#E79BC0'],
+};
