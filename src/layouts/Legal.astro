@@ -1,0 +1,21 @@
+---
+import Base from './Base.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { APP_STORE_URL } from '../config';
+import '../styles/tokens.css';
+import '../styles/blog.css';
+import '../styles/legal.css';
+
+interface Props { title: string; description: string; heading: string; effective?: string }
+const { title, description, heading, effective } = Astro.props;
+---
+<Base title={title} description={description}>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav"><a class="brand" href="/">Day+</a><a class="get" href={APP_STORE_URL || '/#get'}>Get the app</a></header>
+<main class="doc" id="main">
+  <h1>{heading}</h1>
+  {effective && <p class="eff">Effective {effective}</p>}
+  <slot />
+</main>
+<SiteFooter />
+</Base>

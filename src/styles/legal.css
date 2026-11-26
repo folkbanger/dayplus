@@ -1,0 +1,35 @@
+/* Privacy Policy, Terms of Use, Support and 404: one calm reading column. */
+.doc{max-width:728px;margin:0 auto;padding:48px 24px 0;font-size:17px;line-height:28px;color:var(--fg)}
+.doc h1{font-size:36px;line-height:40px;font-weight:600;letter-spacing:-.03em}
+.doc .eff{margin-top:8px;font-size:13px;line-height:18px;color:var(--fg2)}
+.doc .dek{margin-top:24px}
+.doc h2{margin-top:48px;font-size:22px;line-height:28px;font-weight:600;letter-spacing:-.015em}
+.doc p{margin-top:16px}
+.doc a{color:var(--acc-text);text-decoration:underline;text-underline-offset:2px}
+.doc strong{font-weight:600}
+.doc ul{margin-top:16px;list-style:none;display:grid;gap:8px}
+.doc ul>li{position:relative;padding-left:24px}
+.doc ul>li:before{content:"";position:absolute;left:4px;top:11px;width:7px;height:7px;border-radius:50%;background:var(--acc)}
+.lcard{margin-top:24px;padding:24px;border-radius:var(--r-card);background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
+.lcard>:first-child{margin-top:0}
+.lcard .label{font-size:12px;line-height:16px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--acc-text)}
+.lcard .mail{display:inline-block;margin-top:8px;font-size:20px;line-height:28px;font-weight:600}
+.plans-t{width:100%;margin-top:16px;border-collapse:collapse}
+.plans-t td{padding:12px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.plans-t td:first-child{width:30%;padding-right:16px;font-weight:600}
+.qa{margin-top:24px}
+.qa+.qa{margin-top:16px}
+.qa strong{display:block}
+.qa p{margin-top:4px}
+.big404{font-size:80px;line-height:84px;font-weight:600;letter-spacing:-.04em;color:var(--acc)}
+.doc .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.doc .btn{display:inline-flex;align-items:center;height:44px;padding:0 24px;border-radius:var(--r-full);background:var(--fg);color:var(--bg);font-size:15px;font-weight:600;text-decoration:none}
+.doc .btn.ghost{background:var(--card);color:var(--fg);box-shadow:inset 0 0 0 1px var(--line)}
+@media (min-width:960px){
+ .doc{padding-top:var(--s8);font-size:19px;line-height:32px}
+ .doc h1{font-size:var(--t-h1);line-height:var(--lh-h1)}
+ .doc .eff{font-size:var(--t-ui);line-height:var(--lh-ui);margin-top:var(--s3)}
+ .doc .dek{font-size:var(--t-lead);line-height:var(--lh-lead)}
+ .doc h2{font-size:var(--t-h3);line-height:var(--lh-h3)}
+ .lcard{padding:var(--s6)}
+}
