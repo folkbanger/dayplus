@@ -1,0 +1,11 @@
+---
+import { APP_STORE_URL } from '../config';
+interface Props { progress?: boolean }
+const { progress = false } = Astro.props;
+---
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+  <a class="brand" href="/blog/">Day+<span>Blog</span></a>
+  <a class="get" href={APP_STORE_URL || '/#get'}>Get the app</a>
+  {progress && <i class="prog" id="prog" aria-hidden="true"></i>}
+</header>

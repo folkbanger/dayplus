@@ -3,6 +3,7 @@ import { Picture, Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import AppStoreBadge from '../components/AppStoreBadge.astro';
 import { APP_STORE_URL, SEASONAL_PILL, BLOG_STRIP_MIN, OWNER, YEAR } from '../config';
+import { getPosts, card, fmtDate } from '../lib/posts';
 import '../styles/tokens.css';
 import '../styles/home.css';
 
@@ -40,11 +41,9 @@ const faq = [
 ];
 
 // Blog strip: the 3 newest real articles. Hidden until there are at least BLOG_STRIP_MIN.
-type Post = { url: string; title: string; description: string; topic: string; date: Date; minutes: number };
-const posts: Post[] = []; // filled from the blog collection in W2
-const latest = posts.length >= BLOG_STRIP_MIN ? posts.slice(0, 3) : [];
+const posts = await getPosts();
+const latest = posts.length >= BLOG_STRIP_MIN ? posts.slice(0, 3).map((p) => ({ ...card(p), short: fmtDate(p.data.date, false) })) : [];
 const hasBlog = posts.length > 0;
-const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
 const getUrl = APP_STORE_URL || '#get';
 ---
 <Base
@@ -156,7 +155,7 @@ const getUrl = APP_STORE_URL || '#get';
       <h2 class="up">Small habits,<br /><b>explained</b></h2>
       <div class="posts">
         {latest.map((p) => (
-          <a class="post" href={p.url}><span class="tag">{p.topic}</span><h3>{p.title}</h3><p>{p.description}</p><div class="meta">{fmt(p.date)} · {p.minutes} min read</div></a>
+          <a class="post" href={p.url}><span class="tag">{p.topic}</span><h3>{p.title}</h3><p>{p.description}</p><div class="meta">{p.short} · {p.minutes} min read</div></a>
         ))}
       </div>
       <a class="more" href="/blog/">All articles →</a>

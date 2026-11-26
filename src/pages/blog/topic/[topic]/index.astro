@@ -1,0 +1,14 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BlogIndex from '../../../../components/BlogIndex.astro';
+import { getPosts } from '../../../../lib/posts';
+import { TOPIC_NAMES, topicSlug } from '../../../../lib/topics';
+
+export const getStaticPaths = (async () => {
+  const posts = await getPosts();
+  return TOPIC_NAMES.map((t) => ({ params: { topic: topicSlug(t) }, props: { topic: t, posts: posts.filter((p) => p.data.topic === t) } }));
+}) satisfies GetStaticPaths;
+
+const { topic, posts } = Astro.props;
+---
+<BlogIndex posts={posts} page={1} topic={topic} />

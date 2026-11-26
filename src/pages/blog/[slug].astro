@@ -1,0 +1,76 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import BlogNav from '../../components/BlogNav.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import Cover from '../../components/Cover.astro';
+import InShort from '../../components/blog/InShort.astro';
+import Stats from '../../components/blog/Stats.astro';
+import DayPlusBox from '../../components/blog/DayPlusBox.astro';
+import Cite from '../../components/blog/Cite.astro';
+import { getPosts, related, card, fmtDate, minutesToRead, topicUrl, isScheduled, type Entry } from '../../lib/posts';
+import '../../styles/tokens.css';
+import '../../styles/blog.css';
+
+export const getStaticPaths = (async () => {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post, posts } }));
+}) satisfies GetStaticPaths;
+
+interface Props { post: Entry; posts: Entry[] }
+const { post, posts } = Astro.props;
+const { Content, headings } = await render(post);
+const d = post.data;
+const toc = [...headings.filter((h) => h.depth === 2).map((h) => ({ slug: h.slug, text: h.text })), ...(d.sources.length ? [{ slug: 'sources', text: 'Sources' }] : [])];
+const rel = related(posts, post).map(card);
+
+// Sources: plain text with *italics* and bare links.
+const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c] as string);
+const source = (s: string) =>
+  esc(s)
+    .replace(/\*([^*]+)\*/g, '<i>$1</i>')
+    .replace(/(https?:\/\/[^\s<]+[^\s<.,;)])/g, '<a href="$1" rel="noopener">$1</a>');
+const flag = d.draft ? 'Draft' : isScheduled(post) ? 'Scheduled' : '';
+---
+<Base title={`${d.title} | Day+ Blog`} description={d.description}>
+<BlogNav progress />
+<main class="wrap" id="main">
+  <div class="crumb"><a href="/blog/">Blog</a> › <a href={topicUrl(d.topic)}>{d.topic}</a></div>
+  <span class="tag">{d.topic}{flag && <span class="flag">{flag}</span>}</span>
+  <h1>{d.title}</h1>
+  <p class="dek">{d.description}</p>
+  <div class="by"><span class="av" aria-hidden="true">D+</span><div><b>Day+ Blog</b><br /><time datetime={d.date.toISOString().slice(0, 10)}>{fmtDate(d.date)}</time>{d.updated && <> · Updated <time datetime={d.updated.toISOString().slice(0, 10)}>{fmtDate(d.updated)}</time></>} · {minutesToRead(post.body)} min read</div><button class="sh" id="share" type="button">Copy link</button></div>
+  <Cover topic={d.topic} />
+
+  {toc.length > 1 && (
+    <nav class="toc open" id="toc" aria-label="In this article"><button type="button" aria-expanded="true" aria-controls="toc-list">In this article<i aria-hidden="true"></i></button><div class="ol"><ol id="toc-list">
+      {toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+    </ol></div></nav>
+  )}
+
+  <article class="body">
+    <Content components={{ InShort, Stats, DayPlusBox, Cite }} />
+    {d.sources.length > 0 && (
+      <Fragment>
+        <h2 id="sources">Sources</h2>
+        <ol class="src">{d.sources.map((s, i) => <li id={`source-${i + 1}`} set:html={source(s)} />)}</ol>
+      </Fragment>
+    )}
+    <p class="note">This article explains research in plain words. It is not medical advice.</p>
+    {rel.length === 0 && <a class="back" href="/blog/">← All articles</a>}
+  </article>
+
+  {rel.length > 0 && (
+    <section class="rel" aria-labelledby="rel-h">
+      <h2 id="rel-h">Keep reading</h2>
+      {rel.map((p) => (
+        <a class="rl" href={p.url}><Cover topic={p.topic} /><div><span class="tag">{p.topic}</span><h3>{p.title}</h3><span>{p.minutes} min read</span></div></a>
+      ))}
+      <a class="back" href="/blog/">← All articles</a>
+    </section>
+  )}
+</main>
+<SiteFooter />
+<script src="../../scripts/article.ts"></script>
+</Base>

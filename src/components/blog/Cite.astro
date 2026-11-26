@@ -1,0 +1,6 @@
+---
+// A numbered link to the sources at the end: <Cite n={1} />
+interface Props { n: number }
+const { n } = Astro.props;
+---
+<a class="sup" href={`#source-${n}`} aria-label={`Source ${n}`}>{n}</a>

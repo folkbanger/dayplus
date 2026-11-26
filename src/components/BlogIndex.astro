@@ -1,0 +1,77 @@
+---
+import Base from '../layouts/Base.astro';
+import BlogNav from './BlogNav.astro';
+import SiteFooter from './SiteFooter.astro';
+import Cover from './Cover.astro';
+import AppStoreBadge from './AppStoreBadge.astro';
+import { TOPIC_NAMES, type Topic } from '../lib/topics';
+import { card, PER_PAGE, topicUrl, type Entry } from '../lib/posts';
+import '../styles/tokens.css';
+import '../styles/blog.css';
+
+interface Props {
+  posts: Entry[]; // every post in this listing (all, or one topic), newest first
+  page: number;
+  topic?: Topic;
+}
+const { posts, page, topic } = Astro.props;
+const base = topic ? topicUrl(topic) : '/blog/';
+const pageUrl = (n: number) => (n === 1 ? base : `${base}page/${n}/`);
+const rest = posts.slice(1);
+const pages = Math.max(1, Math.ceil(rest.length / PER_PAGE));
+const start = (page - 1) * PER_PAGE;
+const rows = rest.slice(start, start + PER_PAGE).map(card);
+const featured = page === 1 && posts[0] ? card(posts[0]) : null;
+const promo = !topic; // the Day+ box sits in the main list only
+const pageTitle = `${topic ? `${topic} articles` : 'Day+ Blog: Small habits, explained'}${page > 1 ? ` (page ${page})` : ''}`;
+const description = topic
+  ? `Short, practical ${topic.toLowerCase()} articles on building habits, from the makers of Day+, a habit tracker for iPhone.`
+  : 'Short, practical articles on the science of habits and the books about them, from the makers of Day+, a habit tracker for iPhone.';
+---
+<Base title={pageTitle} description={description}>
+<BlogNav />
+<main id="main">
+<section class="head">
+  <div class="eyebrow">{topic ? `Topic: ${topic}` : 'The Day+ blog'}</div>
+  <h1>Small habits,<br /><b>explained</b></h1>
+  <p class="sub">The science of habits and the books about them, made short and practical.</p>
+  <label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span class="sr">Search articles</span><input id="q" type="search" placeholder="Search articles" autocomplete="off" /></label>
+  <nav class="chips" aria-label="Topics">
+    <a class={topic ? 'chip' : 'chip on'} href="/blog/" aria-current={topic ? undefined : 'page'}>All</a>
+    {TOPIC_NAMES.map((t) => <a class={t === topic ? 'chip on' : 'chip'} href={topicUrl(t)} aria-current={t === topic ? 'page' : undefined}>{t}</a>)}
+  </nav>
+</section>
+
+{featured && (
+  <a class="feat" href={featured.url} id="feat">
+    <Cover topic={featured.topic} />
+    <div class="bd"><span class="tag">{featured.topic}</span><span class="new">NEW</span>{featured.flag && <span class="flag">{featured.flag}</span>}<h2>{featured.title}</h2><p>{featured.description}</p><div class="meta">{featured.date}<i></i>{featured.minutes} min read</div></div>
+  </a>
+)}
+
+{(rows.length > 0 || page === 1) && (
+  <div class="lhead"><h2>{page === 1 ? 'Latest' : `Page ${page}`}</h2><span id="count">{topic ? `${posts.length} article${posts.length === 1 ? '' : 's'}` : 'Newest first'}</span></div>
+)}
+<div class="list" id="list" data-topic={topic ?? ''} data-start={start} data-total={rest.length}>
+  {rows.map((p, i) => (
+    <Fragment>
+      {promo && i === 4 && <div class="promo promo-m"><b>Try Day+ free for 3 days</b><span>Pick a few small habits and check them off in one tap. No card needed.</span><AppStoreBadge /></div>}
+      {promo && i === 6 && <div class="promo promo-d"><b>Try Day+ free for 3 days</b><span>Pick a few small habits and check them off in one tap. No card needed.</span><AppStoreBadge /></div>}
+      <a class="row" href={p.url}><Cover topic={p.topic} /><div class="tx"><span class="tag">{p.topic}</span>{p.flag && <span class="flag">{p.flag}</span>}<h3>{p.title}</h3><p>{p.description}</p><div class="meta">{p.date}<i></i>{p.minutes} min</div></div></a>
+    </Fragment>
+  ))}
+</div>
+{posts.length === 0 && <p class="empty" id="empty0">No articles in this topic yet.</p>}
+<p class="empty hide" id="empty">No articles match yet. Try another word.</p>
+<div class="more hide" id="more"><button type="button" id="moreBtn">Load more</button><span id="moreInfo"></span></div>
+{pages > 1 && (
+  <nav class={page === 1 ? 'pager jsoff' : 'pager'} aria-label="Pages">
+    {page > 1 ? <a href={pageUrl(page - 1)}>← Newer</a> : <span></span>}
+    <span>Page {page} of {pages}</span>
+    {page < pages ? <a href={pageUrl(page + 1)}>Older →</a> : <span></span>}
+  </nav>
+)}
+</main>
+<SiteFooter />
+<script src="../scripts/blog-index.ts"></script>
+</Base>

@@ -1,0 +1,6 @@
+---
+import { coverHtml, type Topic } from '../lib/topics';
+interface Props { topic: Topic; class?: string }
+const { topic, class: cls = 'dv' } = Astro.props;
+---
+<Fragment set:html={coverHtml(topic, cls)} />

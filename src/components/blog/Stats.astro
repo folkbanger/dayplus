@@ -1,0 +1,6 @@
+---
+// <Stats items={[['66', 'days, on average'], ['18', 'days, fastest'], ['254', 'days, slowest (estimated)']]} />
+interface Props { items: [string, string][] }
+const { items } = Astro.props;
+---
+<div class="stat">{items.map(([v, l]) => <div><b>{v}</b><span>{l}</span></div>)}</div>
