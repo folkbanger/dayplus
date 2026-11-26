@@ -35,6 +35,8 @@ const onScroll = () => {
   }
   let k = 0;
   heads.forEach((h, i) => { if (h && h.getBoundingClientRect().top < 140) k = i; });
+  // At the very bottom the last sections can't reach the top of the screen: mark the last one.
+  if (innerHeight + scrollY >= document.documentElement.scrollHeight - 2) k = heads.length - 1;
   links.forEach((a, i) => a.classList.toggle('on', i === k));
 };
 addEventListener('scroll', () => { if (!tick) { tick = true; requestAnimationFrame(onScroll); } }, { passive: true });

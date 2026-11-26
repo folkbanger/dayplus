@@ -10,7 +10,7 @@ import Stats from '../../components/blog/Stats.astro';
 import DayPlusBox from '../../components/blog/DayPlusBox.astro';
 import Cite from '../../components/blog/Cite.astro';
 import { getPosts, related, card, fmtDate, minutesToRead, topicUrl, isScheduled, type Entry } from '../../lib/posts';
-import { blogPosting, breadcrumbs } from '../../lib/schema';
+import { blogPosting, breadcrumbs, isoTime } from '../../lib/schema';
 import '../../styles/tokens.css';
 import '../../styles/blog.css';
 
@@ -42,8 +42,8 @@ const flag = d.draft ? 'Draft' : isScheduled(post) ? 'Scheduled' : '';
   image={ogImage}
   imageAlt={d.title}
   rss
-  publishedTime={d.date.toISOString().slice(0, 10)}
-  modifiedTime={(d.updated ?? d.date).toISOString().slice(0, 10)}
+  publishedTime={isoTime(d.date)}
+  modifiedTime={isoTime(d.updated ?? d.date)}
   jsonld={[
     blogPosting({ url: `/blog/${post.id}/`, title: d.title, description: d.description, date: d.date, updated: d.updated, image: ogImage, topic: d.topic }),
     breadcrumbs([['Blog', '/blog/'], [d.topic, topicUrl(d.topic)], [d.title, `/blog/${post.id}/`]]),

@@ -4,6 +4,9 @@ import { APP_STORE_URL, SITE_URL, SUPPORT_EMAIL, LEGAL_NAME } from '../config';
 const abs = (p: string) => new URL(p, SITE_URL).href;
 const ORG_ID = abs('/#organization');
 
+/** An article's day as a full timestamp: 10:00 UTC, when the daily rebuild publishes it. */
+export const isoTime = (d: Date) => `${d.toISOString().slice(0, 10)}T10:00:00Z`;
+
 export const organization = () => ({
   '@context': 'https://schema.org',
   '@type': 'Organization',
@@ -48,8 +51,8 @@ export const blogPosting = (o: { url: string; title: string; description: string
   mainEntityOfPage: abs(o.url),
   headline: o.title,
   description: o.description,
-  datePublished: o.date.toISOString().slice(0, 10),
-  dateModified: (o.updated ?? o.date).toISOString().slice(0, 10),
+  datePublished: isoTime(o.date),
+  dateModified: isoTime(o.updated ?? o.date),
   image: abs(o.image),
   articleSection: o.topic,
   inLanguage: 'en-US',
