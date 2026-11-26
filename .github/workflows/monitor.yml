@@ -1,0 +1,85 @@
+# Daily health check of dayplus.app. Opens one GitHub issue when something fails
+# (GitHub emails the repo owner), adds a comment while it keeps failing, and closes it
+# once everything passes again. No outside service or account.
+name: Monitor
+
+on:
+  schedule:
+    - cron: '30 6 * * *' # 06:30 UTC every day
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      UA: 'Mozilla/5.0 (compatible; dayplus-monitor; +https://dayplus.app)'
+    steps:
+      - name: Run checks
+        id: checks
+        shell: bash
+        run: |
+          set -u
+          fail=()
+          now=$(date -u +%s)
+          days_left() { echo $(( ( $(date -u -d "$1" +%s) - now ) / 86400 )); }
+
+          # 1. Pages answer 200
+          for p in / /privacy/ /terms/ /support/; do
+            code=$(curl -s -o /dev/null -A "$UA" --max-time 30 -w '%{http_code}' "https://dayplus.app$p" || echo 000)
+            [ "$code" = 200 ] || fail+=("https://dayplus.app$p answered $code (expected 200)")
+          done
+
+          # 2. Old GitHub address still lands on the same page
+          final=$(curl -s -o /dev/null -L -A "$UA" --max-time 30 -w '%{http_code} %{url_effective}' https://folkbanger.github.io/dayplus/privacy/ || echo "000 -")
+          [ "$final" = "200 https://dayplus.app/privacy/" ] || fail+=("Old address folkbanger.github.io/dayplus/privacy/ ended at: $final")
+
+          # 3. Certificates valid for more than 14 days: Cloudflare's (what visitors see) and GitHub's (behind Cloudflare)
+          cert_end() { echo | openssl s_client -connect "$1:443" -servername dayplus.app 2>/dev/null | openssl x509 -noout -enddate 2>/dev/null | cut -d= -f2; }
+          for target in dayplus.app 185.199.108.153; do
+            end=$(cert_end "$target")
+            if [ -z "$end" ]; then fail+=("Could not read the TLS certificate via $target"); continue; fi
+            d=$(days_left "$end")
+            label=$([ "$target" = dayplus.app ] && echo "Cloudflare (visitors)" || echo "GitHub Pages (origin)")
+            [ "$d" -gt 14 ] || fail+=("$label certificate ends in $d days ($end)")
+            echo "$label certificate: $d days left"
+          done
+
+          # 4. Domain registration not within 30 days of expiry (public RDAP, no account)
+          exp=$(curl -sL --max-time 30 https://rdap.org/domain/dayplus.app | jq -r '.events[]? | select(.eventAction=="expiration") | .eventDate' | head -1)
+          if [ -z "$exp" ]; then fail+=("Could not read the domain expiry date from RDAP")
+          else d=$(days_left "$exp"); echo "Domain: $d days left"; [ "$d" -gt 30 ] || fail+=("dayplus.app registration ends in $d days ($exp). Check auto-renew at Cloudflare."); fi
+
+          # 5. security.txt not within 30 days of its Expires date
+          sexp=$(curl -s -A "$UA" --max-time 30 https://dayplus.app/.well-known/security.txt | sed -n 's/^Expires: //p' | tr -d '\r')
+          if [ -z "$sexp" ]; then fail+=("security.txt is missing or has no Expires line")
+          else d=$(days_left "$sexp"); echo "security.txt: $d days left"; [ "$d" -gt 30 ] || fail+=("security.txt expires in $d days: update Expires in public/.well-known/security.txt"); fi
+
+          {
+            echo 'report<<EOF'
+            if [ ${#fail[@]} -eq 0 ]; then echo "ok"; else printf -- '- %s\n' "${fail[@]}"; fi
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+          [ ${#fail[@]} -eq 0 ] && echo "All checks passed." || printf 'FAILED: %s\n' "${fail[@]}"
+
+      - name: Open, update or close the issue
+        shell: bash
+        env:
+          REPORT: ${{ steps.checks.outputs.report }}
+        run: |
+          gh label create monitor --color D93F0B --description "Daily site check" --force >/dev/null
+          open=$(gh issue list --label monitor --state open --json number --jq '.[0].number // empty')
+          run="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          if [ "$REPORT" = ok ]; then
+            [ -n "$open" ] && gh issue close "$open" --comment "All checks pass again ($(date -u +%F)). $run"
+            exit 0
+          fi
+          body=$(printf 'The daily check of dayplus.app found a problem on %s:\n\n%s\n\nDetails: %s\n' "$(date -u +%F)" "$REPORT" "$run")
+          if [ -n "$open" ]; then gh issue comment "$open" --body "$body"
+          else gh issue create --title "Site check failed: dayplus.app" --label monitor --body "$body"; fi
