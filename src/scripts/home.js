@@ -164,9 +164,13 @@ $$('.q button').forEach((b) => b.addEventListener('click', () => {
   };
   // Header colour stops (distance into the light section): dark → light teal → light grey.
   // In dark mode the bottom part stays dark.
-  const stops = () => (DARK.matches
-    ? [[0, [7, 9, 10]], [200, [10, 13, 15]], [900, [7, 9, 10]]]
-    : [[0, [7, 9, 10]], [200, [227, 239, 240]], [900, [241, 244, 245]]]);
+  // The fade to light teal ends 112 px into the light section (matches home.css).
+  const stops = () => {
+    const f = 112;
+    return DARK.matches
+      ? [[0, [7, 9, 10]], [f, [10, 13, 15]], [900, [7, 9, 10]]]
+      : [[0, [7, 9, 10]], [f, [227, 239, 240]], [900, [241, 244, 245]]];
+  };
   let ticking = false;
   const onScroll = () => {
     ticking = false;
