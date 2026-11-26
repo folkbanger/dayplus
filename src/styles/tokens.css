@@ -1,5 +1,5 @@
 /* Day+ web tokens (System V2). The one place for colours, spacing, radius, type and the desktop grid.
-   Spacing scale: 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64, plus 128 between sections.
+   Spacing scale: 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64. Sections are 64 apart; 128 only for the dark-to-light fade.
    Radius: 24 (cards) · 12 (small). Weights 400 / 600. Nothing under 11 px. */
 :root{
   /* colour */
@@ -13,7 +13,9 @@
   --font:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
 
   /* spacing */
-  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:64px; --s-sec:128px;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:64px;
+  --s-sec:64px;   /* gap between sections, phone and desktop (Thony, 26 Nov: 128 felt empty) */
+  --s-fade:128px; /* room for the dark-to-light fade above Pricing (light mode) */
   /* radius */
   --r-card:24px; --r-small:12px; --r-full:999px;
 

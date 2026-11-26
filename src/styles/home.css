@@ -294,7 +294,9 @@ footer nav{display:flex;flex-wrap:wrap;gap:12px 24px;margin-bottom:16px;color:va
  .hb .k{width:32px;height:32px}
  .hb .k:after{left:10px;top:5px;width:8px;height:14px}
  /* showcase: caption cols 1–6, phone centred on cols 7–11, steps in col 12 */
- .show{height:420vh;margin-top:var(--s-sec)}
+ .show{height:420vh;--ph:590px;
+  /* the pinned stage centres the phone; pull it in so the phone sits 64 px from the demo above and the section below */
+  margin:calc((100vh - var(--s8) - var(--ph)) / -2) 0}
  .stick{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));column-gap:var(--gutter);align-items:center;padding:var(--s8) var(--m) 0}
  .caps{grid-column:1 / 7;width:auto;height:320px;display:grid;align-items:center;text-align:left}
  .caps .cap{position:relative;inset:auto;grid-area:1/1;display:flex;flex-direction:column;justify-content:center}
@@ -306,7 +308,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:12px 24px;margin-bottom:16px;color:va
  html:not(.js) .caps .cap{grid-area:auto}
  html:not(.js) .stick .stage3d{align-self:start;margin-top:var(--s8)}
  /* bento: title cols 1–12, cards 6 · 3 · 3 */
- .bento-head{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));column-gap:var(--gutter);padding:var(--s-sec) var(--m) 0}
+ .bento-head{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));column-gap:var(--gutter);padding:var(--s8) var(--m) 0}
  .bento-head>*{grid-column:1 / 13}
  .bento-head>h2{margin-top:var(--s4)}
  .bento{grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:var(--gutter);padding:var(--s7) var(--m) 0}
@@ -319,7 +321,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:12px 24px;margin-bottom:16px;color:va
  .tiles b{height:48px;font-size:var(--t-small);border-radius:var(--r-small)}
  .lock svg{width:96px;height:96px}
  /* light part */
- .light{padding-top:var(--s-sec)}
+ .light{padding-top:var(--s-fade)}
  .sec{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));column-gap:var(--gutter);padding:var(--s-sec) var(--m) 0}
  .sec>*{grid-column:1 / 13}
  .sec>h2{margin-top:var(--s4)}
@@ -347,7 +349,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:12px 24px;margin-bottom:16px;color:va
  .post p{font-size:var(--t-body);line-height:var(--lh-body);margin-top:var(--s2)}
  .post .meta{margin-top:var(--s4)}
  .sec>.more{grid-column:1 / 4;margin-top:var(--s5)}
- .end{padding:var(--s-sec) var(--m)}
+ .end{padding:var(--s-sec) var(--m) var(--s7)}
  .end .icon{width:96px;height:96px;border-radius:var(--r-card)}
  .end h2{margin-top:var(--s6);font-size:var(--t-display);line-height:var(--lh-display)}
  .end .cta{margin-top:var(--s6)}
@@ -355,6 +357,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:12px 24px;margin-bottom:16px;color:va
  footer nav{margin:0;gap:var(--s3) var(--s6)}
 }
 @media (min-width:960px) and (prefers-color-scheme:dark){
+ .light{padding-top:var(--s8)}
  .post:hover{box-shadow:0 16px 40px rgba(0,0,0,.5)}
 }
 
@@ -394,6 +397,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:12px 24px;margin-bottom:16px;color:va
 .hc-teal{background:#58C7C9}.hc-coral{background:#F0877E}.hc-gold{background:#D9A441}
 .hc-blue{background:#7FA7E8}.hc-violet{background:#9C8CE0}.hc-olive{background:#B9C46A}
 /* short laptop screens: keep the whole spinning phone in view */
-@media (min-width:960px) and (max-height:780px){ .stick .stage3d{transform:scale(1)} }
-@media (min-width:960px) and (max-height:640px){ .stick .stage3d{transform:scale(.85)} }
+@media (min-width:960px) and (max-height:780px){ .stick .stage3d{transform:scale(1)} .show{--ph:472px} }
+@media (min-width:960px) and (max-height:640px){ .stick .stage3d{transform:scale(.85)} .show{--ph:401px} }
 html:not(.js) .nav{position:absolute}
+@media (min-width:960px){ html:not(.js) .show{margin:0} }
