@@ -108,8 +108,8 @@ const getUrl = APP_STORE_URL || '#get';
         ))}
       </div></div>
       {Array.from({ length: 24 }, () => <i class="sl"></i>)}
-      <div class="side sr"><Image src={sideR} alt="" width={44} height={796} loading="lazy" /></div>
-      <div class="side sl2"><Image src={sideL} alt="" width={44} height={796} loading="lazy" /></div>
+      <div class="side sr"><Image src={sideR} alt="" width={44} height={796} loading="eager" /></div>
+      <div class="side sl2"><Image src={sideL} alt="" width={44} height={796} loading="eager" /></div>
       <div class="face back"><Picture src={back} widths={[480]} formats={['avif', 'webp']} fallbackFormat="webp" alt="" loading="lazy" /></div>
     </div><i class="shadow3d" id="sh3"></i></div>
     <div class="pips" aria-hidden="true">{caps.map((_, i) => <i class={i === 0 ? 'on' : ''}></i>)}</div>
